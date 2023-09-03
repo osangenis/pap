@@ -1,0 +1,25 @@
+As a senior golang engineer, write a gRPC API service that implements the service described in the file `hello.proto` that has the following content:
+
+``` /**
+ * Hello World API service
+ *
+ * Just an experimenting API that will ping what you send
+ */
+ syntax = "proto3";
+
+ package hello;
+ 
+ option go_package = "github.com/osangenis/hello";
+
+  
+ // Hello Service
+ service HelloService {
+   // Returns the same string that was sent
+   rpc Ping(string) returns (string);
+ }
+    ```
+
+The service must be implemented in the file `hello.go`.
+The service must be able to be run with the command `go run hello.go`.
+The service should listen on port 8080 if the environment variable `PORT` is not defined. Otherwise should run in the port defined by the environment variable `PORT`
+
