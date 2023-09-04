@@ -1,0 +1,27 @@
+---
+name: Generate services
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  GPT_API: https://api.github.com
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  hello-service:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '1.19.3'  # Important to have the minor
+      - name: generate_prompt
+     
+          

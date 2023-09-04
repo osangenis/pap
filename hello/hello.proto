@@ -1,0 +1,25 @@
+/**
+ * Hello World API service
+ *
+ * Just an experimenting API that will ping what you send
+ */
+syntax = "proto3";
+
+package hello;
+ 
+option go_package = "github.com/osangenis/hello";
+
+message PingRequest {
+  string in = 1;
+}
+
+message PingResponse {
+  string out = 1;
+}
+  
+// Hello Service
+service HelloService {
+  // Returns the same string that was sent
+  rpc Ping(PingRequest) returns (PingResponse);
+}
+   
