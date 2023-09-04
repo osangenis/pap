@@ -4,12 +4,12 @@ GO_GENERATOR_BIN=./bin/go-generator-cli
 install-gomplate-macos:
 	brew install gomplate
 
-install-templating-macos:
-	mkdir -p bin
-	brew install wget
-	wget ${GO_GENERATOR_BIN_URL} -O ${GO_GENERATOR_BIN}
-	chmod +x ${GO_GENERATOR_BIN}
+install-protolint-macos:
+	brew install protolint
 
-hello-service:
-# ${GO_GENERATOR_BIN} --generator=./hello --target=./hello --render
-	gomplate -f ./hello/prompt.tmpl -o ./hello/prompt.gpt --template ./hello/hello.proto
+proto-lint:
+	docker run --volume "$(PWD):/workspace" --workdir /workspace yoheimuta/protolint lint -fix hello
+
+hello-service: proto-lint
+	gomplate -f ./hello/prompt.tmpl -o ./hello/prompt.gpt --template ./hello/hello.proto --template ./common/code-rules.tmpl
+	go run cmd/openai-render/main.go < ./hello/prompt.gpt > ./hello/result.gpt
