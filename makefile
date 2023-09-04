@@ -12,4 +12,4 @@ proto-lint:
 
 hello-service: proto-lint
 	gomplate -f ./hello/prompt.tmpl -o ./hello/prompt.gpt --template ./hello/hello.proto --template ./common/code-rules.tmpl
-	go run cmd/openai-render/main.go < ./hello/prompt.gpt > ./hello/result.gpt
+	go run cmd/openai-render/main.go -output_dir=$(PWD)/hello < ./hello/prompt.gpt > ./hello/result.gpt
