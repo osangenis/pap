@@ -47,11 +47,9 @@ func main() {
 	}
 
 	files := response.FilesFromChat(resp.Choices[0].Message.Content, "go")
-	for _, file := range files {
-		err = os.WriteFile(*pOutputDir+"/"+file.Path, []byte(file.Content), 0644)
-		if err != nil {
-			panic(fmt.Sprintf("Error writing file %v : %v\n", file.Path, err))
-		}
+	err = files.Write(*pOutputDir)
+	if err != nil {
+		panic(err)
 	}
 
 	fmt.Println(resp.Choices[0].Message.Content)

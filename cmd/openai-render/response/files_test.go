@@ -24,6 +24,15 @@ func Test_FilesFromChat(t *testing.T) {
 				"cmd/main.go",
 			},
 		},
+		{
+			name:     "extract go files from code blocks like ping.go: ``` // hello/ping.go...",
+			filePath: "fixtures/sample2.output",
+			lang:     "go",
+			want: []string{
+				"hello/hello_service.go",
+				"cmd/main.go",
+			},
+		},
 	}
 
 	for _, test := range tests {

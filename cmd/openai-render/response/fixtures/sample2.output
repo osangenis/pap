@@ -1,0 +1,58 @@
+Here is an example implementation of the gRPC API service described in the `hello.proto` file:
+
+main.go:
+
+```go
+// cmd/main.go
+package main
+
+import (
+	"fmt"
+	"log"
+	"net"
+	"os"
+
+	"github.com/osangenis/hello/hello"
+	"google.golang.org/grpc"
+)
+
+func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	address := fmt.Sprintf(":%s", port)
+	listener, err := net.Listen("tcp", address)
+	if err != nil {
+		log.Fatalf("Failed to listen on port %s: %v", port, err)
+	}
+
+	server := grpc.NewServer()
+	hello.RegisterHelloServiceServer(server, &hello.Server{})
+
+	log.Printf("Server listening on port %s", port)
+	if err := server.Serve(listener); err != nil {
+		log.Fatalf("Failed to serve: %v", err)
+	}
+}
+```
+
+hello/hello_service.go:
+
+```go
+// hello/hello_service.go
+package hello
+
+import (
+	"context"
+)
+
+type Server struct{}
+
+func (s *Server) Ping(ctx context.Context, req *PingRequest) (*PingResponse, error) {
+	return &PingResponse{Out: req.In}, nil
+}
+```
+
+To run the service, navigate to the root folder and execute the command `go run cmd/main.go`. This will start the gRPC API service on the specified port or the default port 8080 if the `PORT` environment variable is not defined.
