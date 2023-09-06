@@ -26,6 +26,30 @@ The incremental delivery is a good solution, but it has a few drawbacks:
 
 With the PaP (Platform as Prompts) paradigm, we're looking to improve a few aspects of the incremental delivery:
 
-- The capacity of a development team to deliver larger systems in one iteration. This should help putting the focus of the technical design in the **mid term** as opposed to the short term. Technical debt should be reduced and the quality of the design should be improved.
+- The capacity of a development team to deliver larger systems in one iteration. This should help putting the focus of the technical design in the **mid term** as opposed to the short term. Technical debt should be reduced and the quality of the design should be improved. As the design time counts as development time, developers/architects can invest more time in designing the solution. The issue we can have in here is the is to fall into the analysis paralysis. 
 - The capacity to iterate and refactor existing functionality, as the system is rebuild entirely at each iteration with the updated PROMPTS
+
+## Approach
+
+Typically, generative AIs tend to be stochastic. That implies certain randomness in the responses and the code generated, but more importantly, it means **the code generation process is not deterministic**. The AI generated code might be correct (functionally or semantically) for a specific generation and wrong in the next one.
+
+As a solution, the PaP framework must be built around:
+
+- (1) The capacity to re-generate small pieces (modules) of the system only wihtout affecting others.
+- (2) The capacity to accurately, quickly test that modules can speak correctly between them.
+- (3) The capacity to accurately, quickly test that generated code does comply with the functional descriptions.
+- (4) Being deterministic in the interfaces between modules, specifiying them manually.
+
+
+---
+**The PaP framework can then be described as:**
+
+A framework for building and mantaining a platform given the definitions of:
+- data: when databases should be used
+- interfaces: of the services, as modules
+- component test: as a functional description (for methods and UI components)
+- integration tests: as the behavior the system has to have together
+---
+
+
 
