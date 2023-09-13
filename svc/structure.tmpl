@@ -1,0 +1,4 @@
+The service main file must be named `cmd/main.go`, with the package name `main`.
+The service must be able to be run with the command `go run`.
+Each service method must be implemented in its own file, under the folder `src`, with the package name `{{ env.Getenv "SVC_NAME" }}` and filename as the method name.
+The service should listen on port 8080 if the environment variable `PORT` is not defined. Otherwise should run in the port defined by the environment variable `PORT`

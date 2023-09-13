@@ -47,9 +47,10 @@ func FilesFromChat(resp string, lang string) OutputFiles {
 	filesGroup := OutputFiles{}
 	for _, regex := range knownRegexForCodeBlocks() {
 		for _, match := range regex.FindAllStringSubmatch(resp, -1) {
-			fPath := match[1]
-			fLang := match[2]
-			fContent := match[3]
+			mapMatch := matchToMap(regex, match)
+			fPath := mapMatch["file"]
+			fLang := mapMatch["lang"]
+			fContent := mapMatch["data"]
 			if lang == "" || fLang == lang {
 				filesGroup = append(filesGroup, &OutputFile{
 					Path:    fPath,
@@ -62,22 +63,34 @@ func FilesFromChat(resp string, lang string) OutputFiles {
 	return filesGroup
 }
 
+// matchToMap converts a match result from FindAllStringSubmatch regex
+// to a map of named capturing groups
+func matchToMap(regex *regexp.Regexp, match []string) map[string]string {
+	result := map[string]string{}
+	for i, name := range regex.SubexpNames() {
+		if i != 0 && name != "" {
+			result[name] = match[i]
+		}
+	}
+	return result
+}
+
 // knownRegexForCodeBlocks returns a list of regex that can be used for extracting
 // code blocks from a string (a response from the OpenAI API). The responses sometimes
 // use one format or another, so we need to try different regexes to extract the code
-// The regex must return 3 capturing groups:
-// 1. The relative path of the file
-// 2. The language of the code block
-// 3. The content of the code block
+// The regex must return 3 named capturing groups:
+// 1. **file**: The relative path of the file
+// 2. **lang**: The language of the code block
+// 3. **data**: The content of the code block
 // Additionally, not 2 regex should match the same code block
 func knownRegexForCodeBlocks() []*regexp.Regexp {
-	// you can check this regex at https: //regex101.com/r/Rs5m3T/1
-	longFormat := regexp.MustCompile(`\x60([^\x60]+)\x60:\W\x60\x60\x60(\w+)([^\x60]+)\x60\x60\x60`)
-	// you can check this regex at https://regex101.com/r/ndDhvK/2
-	shortFormat := regexp.MustCompile(`\W+[^:]+\.[^\n]+:\W+\x60\x60\x60go\W+//\W([^\.]+.([^\n]+))([^\x60]+)\x60\x60\x60`)
+	// https://regex101.com/r/Rs5m3T/4
+	longFormat := regexp.MustCompile(`\x60(?P<file>[^\x60]+)\x60:\W\x60\x60\x60(?P<lang>\w+)(?P<data>[^\x60]+)\x60\x60\x60`)
+	// you can check this regex at https://regex101.com/r/AbFxbJ/2
+	withinBlock := regexp.MustCompile(`\x60\x60\x60(?P<lang>[^\n]+)\W+//\W(?P<file>[^\n]+)(?P<data>[^\x60]+)\x60\x60\x60`)
 
 	return []*regexp.Regexp{
 		longFormat,
-		shortFormat,
+		withinBlock,
 	}
 }

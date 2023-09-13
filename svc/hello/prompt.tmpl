@@ -1,0 +1,12 @@
+As a senior golang engineer, write a production-ready gRPC API service that implements the service described in the file `{{ .Env.SVC_NAME }}.proto` that has the following content:
+
+``` 
+{{ template "proto-definition" }} 
+```
+
+{{ template "svc/structure.tmpl" }}
+
+{{ template "svc/logging.tmpl" }}
+
+You have to comply with the following requirements:
+{{ template "common/code-rules.tmpl" }}
