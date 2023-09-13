@@ -1,0 +1,79 @@
+Here's an example implementation of the gRPC API service described in the `hello.proto` file:
+
+```protobuf
+// hello.proto
+syntax = "proto3";
+
+package hello;
+
+option go_package = "github.com/osangenis/hello";
+
+message PingRequest {
+  string in = 1;
+}
+
+message PingResponse {
+  string out = 1;
+}
+
+service HelloService {
+  rpc Ping(PingRequest) returns (PingResponse);
+}
+```
+
+```go
+// cmd/main.go
+
+package main
+
+import (
+	"log"
+	"net"
+	"os"
+
+	"github.com/osangenis/hello"
+	"google.golang.org/grpc"
+)
+
+func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	lis, err := net.Listen("tcp", ":"+port)
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+
+	server := grpc.NewServer()
+	hello.RegisterHelloServiceServer(server, &HelloService{})
+	log.Printf("Server listening on port %s", port)
+
+	if err := server.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %v", err)
+	}
+}
+```
+
+```go
+// src/ping.go
+
+package hello
+
+import "context"
+
+type HelloService struct{}
+
+func (s *HelloService) Ping(ctx context.Context, req *PingRequest) (*PingResponse, error) {
+	return &PingResponse{out: req.in}, nil
+}
+```
+
+To run the service, make sure you have Go installed and configured properly, and then execute the following command in the root directory of your project:
+
+```shell
+go run cmd/main.go
+```
+
+This will start the gRPC API service and listen on port 8080 (or the port specified by the `PORT` environment variable). The service will respond to the `Ping` method call by returning the same input string in the `PingResponse` message.

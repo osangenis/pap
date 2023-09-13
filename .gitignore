@@ -1,3 +1,7 @@
 
-#In this project, gpt files are generated from templates
+# In this project, gpt files are generated from templates
 *.gpt
+
+# Ignore Visual Studio Code specific settings
+.vscode/
+
